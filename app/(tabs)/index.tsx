@@ -1,9 +1,12 @@
 import { Image } from 'expo-image';
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme, View } from 'react-native';
 
+import { IconSymbol } from '@/components/ui/IconSymbol';
+import { Colors } from '@/constants/Colors';
 import { GET_POKEMONS } from '@/graphql/queries';
-import { useQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
+import { useNavigation } from 'expo-router';
 
 interface Pokemon {
   id: number;
@@ -13,13 +16,24 @@ interface Pokemon {
 
 export default function HomeScreen() {
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+  const [showSearchBar, setShowSearchBar] = useState<boolean>(false);
+  const searchInput = useRef<TextInput>(null)
+  const navigation = useNavigation();
 
-  const { data, loading, error, fetchMore } = useQuery(GET_POKEMONS, {
+  const [searchItems, { data, loading, error, fetchMore }] = useLazyQuery(GET_POKEMONS, {
     variables: {
       limit: 20,
       offset: 0,
+      name: `%%`,
     },
   });
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => <HeaderRightItem onPress={() => setShowSearchBar(prev => !prev)} />,
+    });
+    searchItems();
+  }, []);
 
   useEffect(() => {
     if (data) {
@@ -33,32 +47,62 @@ export default function HomeScreen() {
     }
   }, [data])
 
-  if (loading) {
-    return <ActivityIndicator style={styles.loading} />;
-  }
-
-  if (error) {
-    return <Text>Error: {error.message}</Text>;
+  function onSearch(input: string) {
+    searchItems({ variables: { name: `%${input}%` } });
   }
 
   return (
     <View>
-      <FlatList
-        data={pokemons}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <PokemonCard pokemon={item} />}
-        numColumns={2}
-        onEndReachedThreshold={0.8}
-        onEndReached={() => {
-          fetchMore({
-            variables: {
-              offset: pokemons.length,
-            },
-          })
-        }}
-        ListFooterComponent={loading ? <ActivityIndicator /> : null}
-      />
+      {showSearchBar && (
+        <TextInput
+          ref={searchInput}
+          placeholder="Search"
+          style={{
+            height: 40,
+            borderColor: 'gray',
+            borderWidth: 1,
+            margin: 10,
+            paddingLeft: 10,
+            borderRadius: 5,
+          }}
+          autoCapitalize='none'
+          autoCorrect={false}
+          onChangeText={onSearch}
+        />
+      )}
+
+      {loading && <ActivityIndicator style={styles.loading} />}
+
+      {error && <Text>Error: {error.message}</Text>}
+
+      {!loading && !error && (
+        <FlatList
+          data={pokemons}
+          keyExtractor={(item: Pokemon) => item.id.toString()}
+          renderItem={({ item }) => <PokemonCard pokemon={item} />}
+          numColumns={2}
+          onEndReachedThreshold={0.8}
+          onEndReached={() => {
+            fetchMore({
+              variables: {
+                offset: pokemons.length,
+              },
+            })
+          }}
+          ListFooterComponent={loading ? <ActivityIndicator /> : null}
+        />
+      )}
     </View>
+  );
+}
+
+function HeaderRightItem({ onPress }: { onPress: () => void }) {
+  const colorScheme = useColorScheme();
+
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <IconSymbol size={28} name="magnifyingglass" color={Colors[colorScheme ?? 'light'].icon} style={styles.headerRightItem} />
+    </TouchableOpacity>
   );
 }
 
@@ -80,13 +124,16 @@ function PokemonCard({ pokemon }: { pokemon: Pokemon }) {
           source={sprite}
           style={{ width: 100, height: 100 }}
         />
-        <Text>{name}</Text>
+        <Text style={{ textAlign: 'center' }}>{name}</Text>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  headerRightItem: {
+    marginRight: 10,
+  },
   loading: {
     flex: 1,
     justifyContent: 'center',
