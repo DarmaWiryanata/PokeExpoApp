@@ -1,75 +1,103 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { GET_POKEMONS } from '@/graphql/queries';
+import { useQuery } from '@apollo/client';
+
+interface Pokemon {
+  id: number;
+  name: string;
+  sprite: string;
+}
 
 export default function HomeScreen() {
+  const LIMIT = 20;
+
+  const [offset, setOffset] = useState(0);
+  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+
+  const { data, loading, error } = useQuery(GET_POKEMONS, {
+    variables: {
+      limit: LIMIT,
+      offset,
+    },
+  });
+
+  useEffect(() => {
+    if (data) {
+      const pokemons: Pokemon[] = data.pokemon_v2_pokemon.map((pokemon: any) => ({
+        id: pokemon.id,
+        name: pokemon.name,
+        sprite: pokemon.pokemon_v2_pokemonsprites[0]?.sprites ?? "",
+      }))
+
+      setPokemons(pokemons);
+    }
+  }, [data])
+
+  if (loading) {
+    return <ActivityIndicator />;
+  }
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
+    <View>
+      <FlatList
+        data={pokemons}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => <PokemonCard pokemon={item} />}
+        numColumns={2}
+      />
+    </View>
+  );
+}
+
+function PokemonCard({ pokemon }: { pokemon: Pokemon }) {
+  const { id, name, sprite } = pokemon;
+  const POKEBALL_IMAGE = 'https://icon-library.com/images/small-pokeball-icon/small-pokeball-icon-4.jpg';
+
+  return (
+    <View style={styles.cardContainer}>
+      <View style={styles.cardHeader}>
         <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+          source={POKEBALL_IMAGE}
+          style={{ width: 40, height: 40 }}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        <Text>{id}</Text>
+      </View>
+      <View style={styles.cardContent}>
+        <Image
+          source={sprite}
+          style={{ width: 100, height: 100 }}
+        />
+        <Text>{name}</Text>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
+  cardContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: 8,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    margin: 5,
+    backgroundColor: '#fff',
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  cardHeader: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+    width: "100%",
+    paddingHorizontal: 10,
+    paddingBottom: 5,
+    alignItems: 'center',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  cardContent: {
+    paddingTop: 5,
   },
 });
