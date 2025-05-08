@@ -12,15 +12,12 @@ interface Pokemon {
 }
 
 export default function HomeScreen() {
-  const LIMIT = 20;
-
-  const [offset, setOffset] = useState(0);
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
 
-  const { data, loading, error } = useQuery(GET_POKEMONS, {
+  const { data, loading, error, fetchMore } = useQuery(GET_POKEMONS, {
     variables: {
-      limit: LIMIT,
-      offset,
+      limit: 20,
+      offset: 0,
     },
   });
 
@@ -37,7 +34,11 @@ export default function HomeScreen() {
   }, [data])
 
   if (loading) {
-    return <ActivityIndicator />;
+    return <ActivityIndicator style={styles.loading} />;
+  }
+
+  if (error) {
+    return <Text>Error: {error.message}</Text>;
   }
 
   return (
@@ -47,6 +48,15 @@ export default function HomeScreen() {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => <PokemonCard pokemon={item} />}
         numColumns={2}
+        onEndReachedThreshold={0.8}
+        onEndReached={() => {
+          fetchMore({
+            variables: {
+              offset: pokemons.length,
+            },
+          })
+        }}
+        ListFooterComponent={loading ? <ActivityIndicator /> : null}
       />
     </View>
   );
@@ -77,6 +87,11 @@ function PokemonCard({ pokemon }: { pokemon: Pokemon }) {
 }
 
 const styles = StyleSheet.create({
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   cardContainer: {
     flex: 1,
     justifyContent: 'center',
