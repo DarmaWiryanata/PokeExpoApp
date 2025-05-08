@@ -1,14 +1,15 @@
 import { Image } from 'expo-image';
 import { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme } from 'react-native';
 
+import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Colors } from '@/constants/Colors';
 import { GET_POKEMONS } from '@/graphql/queries';
 import { useLazyQuery } from '@apollo/client';
-import { useNavigation } from 'expo-router';
+import { Link, useNavigation } from 'expo-router';
 
-interface Pokemon {
+export interface Pokemon {
   id: number;
   name: string;
   sprite: string;
@@ -17,7 +18,7 @@ interface Pokemon {
 export default function HomeScreen() {
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [showSearchBar, setShowSearchBar] = useState<boolean>(false);
-  const searchInput = useRef<TextInput>(null)
+  const searchInput = useRef<TextInput>(null);
   const navigation = useNavigation();
 
   const [searchItems, { data, loading, error, fetchMore }] = useLazyQuery(GET_POKEMONS, {
@@ -52,7 +53,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <View>
+    <ThemedView>
       {showSearchBar && (
         <TextInput
           ref={searchInput}
@@ -92,7 +93,7 @@ export default function HomeScreen() {
           ListFooterComponent={loading ? <ActivityIndicator /> : null}
         />
       )}
-    </View>
+    </ThemedView>
   );
 }
 
@@ -111,22 +112,28 @@ function PokemonCard({ pokemon }: { pokemon: Pokemon }) {
   const POKEBALL_IMAGE = 'https://icon-library.com/images/small-pokeball-icon/small-pokeball-icon-4.jpg';
 
   return (
-    <View style={styles.cardContainer}>
-      <View style={styles.cardHeader}>
+    <Link
+      style={styles.cardContainer}
+      href={{
+        pathname: '/[id]',
+        params: { id, name }
+      }}
+    >
+      <ThemedView style={styles.cardHeader}>
         <Image
           source={POKEBALL_IMAGE}
           style={{ width: 40, height: 40 }}
         />
         <Text>{id}</Text>
-      </View>
-      <View style={styles.cardContent}>
+      </ThemedView>
+      <ThemedView style={styles.cardContent}>
         <Image
           source={sprite}
           style={{ width: 100, height: 100 }}
         />
         <Text style={{ textAlign: 'center' }}>{name}</Text>
-      </View>
-    </View>
+      </ThemedView>
+    </Link>
   );
 }
 
