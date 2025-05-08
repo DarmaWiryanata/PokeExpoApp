@@ -3,11 +3,11 @@ import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme } from 'react-native';
 
 import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
+import { IconSymbol, IconSymbolName } from '@/components/ui/IconSymbol';
 import { Colors } from '@/constants/Colors';
 import { GET_POKEMONS } from '@/graphql/queries';
 import { useLazyQuery } from '@apollo/client';
-import { Link, useNavigation } from 'expo-router';
+import { Link, router, useLocalSearchParams, useNavigation } from 'expo-router';
 
 export interface Pokemon {
   id: number;
@@ -16,25 +16,33 @@ export interface Pokemon {
 }
 
 export default function HomeScreen() {
+  const { sort, type } = useLocalSearchParams();
+  const navigation = useNavigation();
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [showSearchBar, setShowSearchBar] = useState<boolean>(false);
   const searchInput = useRef<TextInput>(null);
-  const navigation = useNavigation();
-
-  const [searchItems, { data, loading, error, fetchMore }] = useLazyQuery(GET_POKEMONS, {
-    variables: {
-      limit: 20,
-      offset: 0,
-      name: `%%`,
-    },
-  });
 
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => <HeaderRightItem onPress={() => setShowSearchBar(prev => !prev)} />,
+      headerRight: () => (
+        <ThemedView style={{ flexDirection: 'row' }}>
+          <HeaderRightItem icon="line.horizontal.3.decrease" onPress={() => router.navigate('/filter')} />
+          <HeaderRightItem icon="magnifyingglass" onPress={() => setShowSearchBar(prev => !prev)} />
+        </ThemedView>
+      ),
     });
-    searchItems();
+    filterItems();
   }, []);
+
+  const [filterItems, { data, loading, error, fetchMore }] = useLazyQuery(GET_POKEMONS, {
+    variables: {
+      limit: 20,
+      nameFilter: {},
+      offset: 0,
+      typeFilter: {},
+      sort: { id: 'asc' },
+    },
+  });
 
   useEffect(() => {
     if (data) {
@@ -48,8 +56,17 @@ export default function HomeScreen() {
     }
   }, [data])
 
+  useEffect(() => {
+    filterItems({
+      variables: {
+        sort: { [sort?.toString() ?? 'id']: 'asc' },
+        typeFilter: type && type !== "0" ? { type_id: { _eq: type } } : {},
+      }
+    });
+  }, [sort, type]);
+
   function onSearch(input: string) {
-    searchItems({ variables: { name: `%${input}%` } });
+    filterItems({ variables: { nameFilter: input !== '' ? { _ilike: `%${input}%` } : {} } });
   }
 
   return (
@@ -97,12 +114,12 @@ export default function HomeScreen() {
   );
 }
 
-function HeaderRightItem({ onPress }: { onPress: () => void }) {
+function HeaderRightItem({ icon, onPress }: { icon: IconSymbolName, onPress: () => void }) {
   const colorScheme = useColorScheme();
 
   return (
     <TouchableOpacity onPress={onPress}>
-      <IconSymbol size={28} name="magnifyingglass" color={Colors[colorScheme ?? 'light'].icon} style={styles.headerRightItem} />
+      <IconSymbol size={28} name={icon} color={Colors[colorScheme ?? 'light'].icon} style={styles.headerRightItem} />
     </TouchableOpacity>
   );
 }
@@ -115,7 +132,7 @@ function PokemonCard({ pokemon }: { pokemon: Pokemon }) {
     <Link
       style={styles.cardContainer}
       href={{
-        pathname: '/[id]',
+        pathname: '/pokemon/[id]',
         params: { id, name }
       }}
     >

@@ -7,7 +7,7 @@ import { ActivityIndicator, StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { GET_POKEMON_DETAIL } from '@/graphql/queries';
-import { Pokemon } from './(tabs)';
+import { Pokemon } from '../(tabs)';
 
 export interface PokemonDetail extends Pokemon {
   height: number;

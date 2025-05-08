@@ -1,13 +1,24 @@
 import { gql } from '@apollo/client';
 
 export const GET_POKEMONS =  gql`
-  query getPokemonsQuery($limit: Int, $name: String, $offset: Int) {
+  query getPokemonsQuery(
+    $limit: Int
+    $nameFilter: String_comparison_exp
+    $offset: Int
+    $sort: [pokemon_v2_pokemon_order_by!]
+    $typeFilter: pokemon_v2_pokemontype_bool_exp
+  ) {
     pokemon_v2_pokemon_aggregate {
       aggregate {
         count
       }
     }
-    pokemon_v2_pokemon(limit: $limit, offset: $offset, where: {name: {_like: $name}}) {
+    pokemon_v2_pokemon(
+      limit: $limit
+      offset: $offset
+      where: {name: $nameFilter, pokemon_v2_pokemontypes: $typeFilter}
+      order_by: $sort
+    ) {
       id
       name
       pokemon_v2_pokemonsprites {
@@ -54,6 +65,15 @@ export const GET_POKEMON_DETAIL = gql`
         is_hidden
         slot
       }
+    }
+  }
+`;
+
+export const GET_POKEMON_TYPES = gql`
+  query getPokemonTypesQuery {
+    pokemon_v2_type {
+      id
+      name
     }
   }
 `;
