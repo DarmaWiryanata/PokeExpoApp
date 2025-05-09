@@ -7,6 +7,7 @@ import 'react-native-reanimated';
 
 import { client } from '@/config/apollo';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { FilterProvider } from '@/stores';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -22,12 +23,14 @@ export default function RootLayout() {
   return (
     <ApolloProvider client={client}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="filter" options={{ title: 'Filter & Sort' }} />
-          <Stack.Screen name="pokemon/[id]" options={{ title: 'Pokemon Detail' }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
+        <FilterProvider>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="filter" options={{ title: 'Filter & Sort' }} />
+            <Stack.Screen name="pokemon/[id]" options={{ title: 'Pokemon Detail' }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+        </FilterProvider>
         <StatusBar style="auto" />
       </ThemeProvider>
     </ApolloProvider>

@@ -1,12 +1,13 @@
 import Checkbox from 'expo-checkbox';
-import { router, useNavigation } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useNavigation } from 'expo-router';
+import { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { GET_POKEMON_TYPES } from '@/graphql/queries';
+import { FilterContext } from '@/stores';
 import { useQuery } from '@apollo/client';
 
 interface PokemonType {
@@ -16,23 +17,13 @@ interface PokemonType {
 
 export default function FilterScreen() {
   const navigation = useNavigation();
-  const [selectedSort, setSelectedSort] = useState<string>('id');
   const [types, setTypes] = useState<PokemonType[]>([{ id: 0, name: 'All' }]);
-  const [selectedType, setSelectedType] = useState<number>(0);
+  const { selectedSort, selectedType, setSelectedSort, setSelectedType } = useContext(FilterContext);
 
   useEffect(() => {
     navigation.setOptions({
       title: 'Filter & Sort',
       headerBackTitle: 'Back',
-      headerRight: () => (
-        <ThemedText
-          type="link"
-          style={{ marginRight: 16 }}
-          onPress={applyFilters}
-        >
-          Apply
-        </ThemedText>
-      ),
     });
   }, []);
 
@@ -43,13 +34,6 @@ export default function FilterScreen() {
       setTypes(prev => [...prev, ...data.pokemon_v2_type]);
     }
   }, [data])
-
-  function applyFilters() {
-    router.navigate({
-      pathname: '/',
-      params: { sort: selectedSort, type: selectedType }
-    });
-  }
 
   return (
     <ThemedView style={styles.container}>

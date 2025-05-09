@@ -8,11 +8,6 @@ export const GET_POKEMONS =  gql`
     $sort: [pokemon_v2_pokemon_order_by!]
     $typeFilter: pokemon_v2_pokemontype_bool_exp
   ) {
-    pokemon_v2_pokemon_aggregate {
-      aggregate {
-        count
-      }
-    }
     pokemon_v2_pokemon(
       limit: $limit
       offset: $offset
