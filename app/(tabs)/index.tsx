@@ -4,10 +4,10 @@ import { router, useNavigation } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, TextInput } from 'react-native';
 
+import Error from '@/components/Error';
 import HeaderRightItem from '@/components/HeaderRightItem';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import PokemonCard from '@/components/PokemonCard';
-import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Icons from '@/constants/Icons';
 import { FilterContext } from '@/stores';
@@ -77,7 +77,7 @@ export default function HomeScreen() {
 
       {loading && <LoadingIndicator />}
 
-      {error && <Text>Error: {error.message}</Text>}
+      {error && <Error message={error.message} />}
 
       {!loading && !error && (
         <FlatList
