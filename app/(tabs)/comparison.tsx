@@ -10,6 +10,7 @@ import { POKEBALL_IMAGE } from '@/constants/Images';
 import { GET_POKEMON_DETAIL, GET_POKEMONS_DROPDOWN } from '@/graphql/queries';
 import Pokemon from '@/types/Pokemon';
 import PokemonDetail from '@/types/PokemonDetail';
+import getStatLabel from '@/utils/functions/getStatLabel';
 import parsePokemon from '@/utils/functions/parsePokemon';
 
 export default function FilterScreen() {
@@ -66,7 +67,7 @@ export default function FilterScreen() {
 
         return (
           <View key={name}>
-            <ThemedText style={styles.statName}>{name}</ThemedText>
+            <ThemedText style={styles.statName}>{getStatLabel(name)}</ThemedText>
             <ThemedView style={[styles.sectionContainer, styles.statsContainer]}>
               <PokemonStats key={pokemon1Value} value={pokemon1Value} backgroundColor='#444' containerStyle={{ flexDirection: 'row-reverse' }} />
               <PokemonStats key={pokemon2Value} value={pokemon2Value} backgroundColor='#999' />

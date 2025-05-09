@@ -13,6 +13,7 @@ import { GET_POKEMON_DETAIL } from '@/graphql/queries';
 import PokemonDetail from '@/types/PokemonDetail';
 import PokemonStat from '@/types/PokemonStat';
 import PokemonType from '@/types/PokemonType';
+import getStatLabel from '@/utils/functions/getStatLabel';
 import parsePokemon from '@/utils/functions/parsePokemon';
 
 export default function DetailScreen() {
@@ -88,7 +89,7 @@ function PokemonStats({ stats }: { stats: PokemonStat[] }) {
     <>
       {stats.map(({ name, base_stat }) => (
         <ThemedView key={name}>
-          <ThemedText type='defaultSemiBold'>{name}</ThemedText>
+          <ThemedText type='defaultSemiBold'>{getStatLabel(name)}</ThemedText>
           <ThemedView style={styles.statContainer}>
             <ThemedView style={styles.statBar}>
               <ThemedText
