@@ -5,10 +5,11 @@ import { ActivityIndicator, FlatList, StyleSheet, Text, TextInput, TouchableOpac
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol, IconSymbolName } from '@/components/ui/IconSymbol';
 import { Colors } from '@/constants/Colors';
+import { POKEBALL_IMAGE } from '@/constants/Images';
 import { GET_POKEMONS } from '@/graphql/queries';
 import { FilterContext } from '@/stores';
 import { useQuery } from '@apollo/client';
-import { Link, router, useLocalSearchParams, useNavigation } from 'expo-router';
+import { Link, router, useNavigation } from 'expo-router';
 
 export interface Pokemon {
   id: number;
@@ -17,7 +18,6 @@ export interface Pokemon {
 }
 
 export default function HomeScreen() {
-  const { sort, type } = useLocalSearchParams();
   const navigation = useNavigation();
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [showSearchBar, setShowSearchBar] = useState<boolean>(false);
@@ -116,7 +116,6 @@ function HeaderRightItem({ icon, onPress }: { icon: IconSymbolName, onPress: () 
 
 function PokemonCard({ pokemon }: { pokemon: Pokemon }) {
   const { id, name, sprite } = pokemon;
-  const POKEBALL_IMAGE = 'https://icon-library.com/images/small-pokeball-icon/small-pokeball-icon-4.jpg';
 
   return (
     <Link

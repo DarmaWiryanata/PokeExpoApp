@@ -6,13 +6,12 @@ import { Dropdown } from 'react-native-element-dropdown';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { POKEBALL_IMAGE } from '@/constants/Images';
 import { GET_POKEMON_DETAIL, GET_POKEMONS_DROPDOWN } from '@/graphql/queries';
 import { Pokemon } from '.';
 import { PokemonAbility, PokemonDetail, PokemonStat, PokemonType } from '../pokemon/[id]';
 
 export default function FilterScreen() {
-  const POKEBALL_IMAGE = 'https://icon-library.com/images/small-pokeball-icon/small-pokeball-icon-4.jpg';
-
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [firstPokemon, setFirstPokemon] = useState<PokemonDetail>();
   const [secondPokemonID, setSecondPokemonID] = useState<number>();

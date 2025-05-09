@@ -6,6 +6,7 @@ import { ActivityIndicator, StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { POKEBALL_IMAGE } from '@/constants/Images';
 import { GET_POKEMON_DETAIL } from '@/graphql/queries';
 import { Pokemon } from '../(tabs)';
 
@@ -37,8 +38,6 @@ export interface PokemonAbility {
 }
 
 export default function DetailScreen() {
-  const POKEBALL_IMAGE = 'https://icon-library.com/images/small-pokeball-icon/small-pokeball-icon-4.jpg';
-
   const { id, name } = useLocalSearchParams();
   const navigation = useNavigation();
   const [pokemon, setPokemon] = useState<PokemonDetail>();
