@@ -9,10 +9,8 @@ import { ThemedView } from '@/components/ThemedView';
 import { POKEBALL_IMAGE } from '@/constants/Images';
 import { GET_POKEMON_DETAIL, GET_POKEMONS_DROPDOWN } from '@/graphql/queries';
 import Pokemon from '@/types/Pokemon';
-import PokemonAbility from '@/types/PokemonAbility';
 import PokemonDetail from '@/types/PokemonDetail';
-import PokemonStat from '@/types/PokemonStat';
-import PokemonType from '@/types/PokemonType';
+import parsePokemon from '@/utils/functions/parsePokemon';
 
 export default function FilterScreen() {
   const [pokemonsDropdown, setPokemonsDropdown] = useState<Pokemon[]>([]);
@@ -37,47 +35,8 @@ export default function FilterScreen() {
 
   useEffect(() => {
     if (pokemon.data) {
-      const {
-        id,
-        name,
-        height,
-        weight,
-        pokemon_v2_pokemonsprites,
-        pokemon_v2_pokemontypes,
-        pokemon_v2_pokemonstats,
-        pokemon_v2_pokemonabilities
-      } = pokemon.data.pokemon_v2_pokemon_by_pk;
-
-      const types: PokemonType[] = pokemon_v2_pokemontypes.map((type: any) => ({
-        name: type.pokemon_v2_type.name,
-        slot: type.slot,
-      })).sort((a: PokemonType, b: PokemonType) => (a.slot < b.slot ? -1 : 1));
-
-      const stats: PokemonStat[] = pokemon_v2_pokemonstats.map((stat: any) => ({
-        name: stat.pokemon_v2_stat.name,
-        base_stat: stat.base_stat,
-        effort: stat.effort,
-      }));
-
-      const abilities: PokemonAbility[] = pokemon_v2_pokemonabilities.map((ability: any) => ({
-        name: ability.pokemon_v2_ability.name,
-        slot: ability.slot,
-        is_hidden: ability.is_hidden,
-      })).sort((a: PokemonAbility, b: PokemonAbility) => (a.slot < b.slot ? -1 : 1));
-
-      const { officialSprite, defaultSprite }: any = pokemon_v2_pokemonsprites[0];
-      const selectedPokemon: PokemonDetail = {
-        id,
-        name,
-        height,
-        weight,
-        sprite: officialSprite ?? defaultSprite,
-        types,
-        stats,
-        abilities,
-      }
-
-      isLeft ? setFirstPokemon(selectedPokemon) : setSecondPokemon(selectedPokemon);
+      const parsedPokemon = parsePokemon(pokemon.data);
+      isLeft ? setFirstPokemon(parsedPokemon) : setSecondPokemon(parsedPokemon);
     }
   }, [pokemon.data])
 
