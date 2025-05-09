@@ -6,6 +6,7 @@ import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
+import Icons from '@/constants/Icons';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
@@ -29,14 +30,14 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name={Icons.Home} color={color} />,
         }}
       />
       <Tabs.Screen
         name="comparison"
         options={{
           title: 'Comparison',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="arrow.right.and.line.vertical.and.arrow.left" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name={Icons.ArrowsToLine} color={color} />,
         }}
       />
     </Tabs>

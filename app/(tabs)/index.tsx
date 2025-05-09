@@ -5,6 +5,7 @@ import { ActivityIndicator, FlatList, StyleSheet, Text, TextInput, TouchableOpac
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol, IconSymbolName } from '@/components/ui/IconSymbol';
 import { Colors } from '@/constants/Colors';
+import Icons from '@/constants/Icons';
 import { POKEBALL_IMAGE } from '@/constants/Images';
 import { GET_POKEMONS } from '@/graphql/queries';
 import { FilterContext } from '@/stores';
@@ -27,8 +28,8 @@ export default function HomeScreen() {
     navigation.setOptions({
       headerRight: () => (
         <ThemedView style={{ flexDirection: 'row' }}>
-          <HeaderRightItem icon="line.horizontal.3.decrease" onPress={() => router.navigate('/filter')} />
-          <HeaderRightItem icon="magnifyingglass" onPress={() => setShowSearchBar(prev => !prev)} />
+          <HeaderRightItem icon={Icons.FilterList} onPress={() => router.navigate('/filter')} />
+          <HeaderRightItem icon={Icons.Search} onPress={() => setShowSearchBar(prev => !prev)} />
         </ThemedView>
       ),
     });
