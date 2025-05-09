@@ -1,7 +1,7 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { Image } from 'expo-image';
 import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ColorValue, StyleSheet, View, ViewStyle } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 
 import { ThemedText } from '@/components/ThemedText';
@@ -50,43 +50,13 @@ export default function FilterScreen() {
   return (
     <ThemedView style={styles.container}>
       <ThemedView style={styles.sectionContainer}>
-        <Dropdown
-            style={styles.dropdown}
-            selectedTextStyle={styles.selectedTextStyle}
-            inputSearchStyle={styles.inputSearchStyle}
-          data={pokemonsDropdown}
-            search
-            maxHeight={300}
-            labelField="name"
-            valueField="id"
-            searchPlaceholder="Search..."
-            value={firstPokemon}
-          onChange={(item) => onSelectPokemon(item, true)}
-          />
-        <Dropdown
-            style={styles.dropdown}
-            selectedTextStyle={styles.selectedTextStyle}
-            inputSearchStyle={styles.inputSearchStyle}
-          data={pokemonsDropdown}
-            search
-            maxHeight={300}
-            labelField="name"
-            valueField="id"
-            searchPlaceholder="Search..."
-            value={secondPokemon}
-          onChange={(item) => onSelectPokemon(item, false)}
-          />
+        <PokemonDropdown pokemonsDropdown={pokemonsDropdown} selectedPokemon={firstPokemon} onSelect={(item) => onSelectPokemon(item, true)} />
+        <PokemonDropdown pokemonsDropdown={pokemonsDropdown} selectedPokemon={secondPokemon} onSelect={(item) => onSelectPokemon(item, false)} />
       </ThemedView>
 
       <ThemedView style={styles.sectionContainer}>
-        <Image
-          source={firstPokemon?.sprite ?? POKEBALL_IMAGE}
-          style={{ width: '50%', height: 200 }}
-        />
-        <Image
-          source={secondPokemon?.sprite ?? POKEBALL_IMAGE}
-          style={{ width: '50%', height: 200 }}
-        />
+        <PokemonImage image={firstPokemon?.sprite} />
+        <PokemonImage image={secondPokemon?.sprite} />
       </ThemedView>
 
       {firstPokemon && secondPokemon && firstPokemon.stats.map((stat, index) => {
@@ -96,49 +66,71 @@ export default function FilterScreen() {
 
         return (
           <View key={name}>
-            <ThemedText style={{textAlign: 'center'}}>{name}</ThemedText>
-            <ThemedView style={[styles.sectionContainer, styles.statContainer]}>
-              <View style={{
-                width: "50%",
-                flexDirection: "row-reverse",
-              }}>
-                <ThemedText
-                  style={[
-                    styles.statBar,
-                    styles.statValue,
-                    {
-                      width: `${pokemon1Value}%`,
-                      backgroundColor: '#444',
-                      borderBottomRightRadius: 0,
-                      borderTopRightRadius: 0
-                    }
-                  ]}
-                >
-                  {pokemon1Value}
-                </ThemedText>
-              </View>
-              <View style={{ width: "50%" }}>
-                <ThemedText
-                  style={[
-                    styles.statBar,
-                    styles.statValue,
-                    {
-                      width: `${pokemon2Value}%`,
-                      backgroundColor: '#999',
-                      borderBottomLeftRadius: 0,
-                      borderTopLeftRadius: 0
-                    }
-                  ]}
-                >
-                  {pokemon2Value}
-                </ThemedText>
-              </View>
+            <ThemedText style={styles.statName}>{name}</ThemedText>
+            <ThemedView style={[styles.sectionContainer, styles.statsContainer]}>
+              <PokemonStats key={pokemon1Value} value={pokemon1Value} backgroundColor='#444' containerStyle={{ flexDirection: 'row-reverse' }} />
+              <PokemonStats key={pokemon2Value} value={pokemon2Value} backgroundColor='#999' />
             </ThemedView>
           </View>
         )
       })}
     </ThemedView>
   );
+}
+
+function PokemonDropdown({
+  pokemonsDropdown,
+  selectedPokemon,
+  onSelect
+}: {
+  pokemonsDropdown: Pokemon[]
+  selectedPokemon?: PokemonDetail
+  onSelect: (item: Pokemon) => void
+}) {
+  return (
+    <Dropdown
+      style={styles.dropdown}
+      selectedTextStyle={styles.selectedTextStyle}
+      inputSearchStyle={styles.inputSearchStyle}
+      data={pokemonsDropdown}
+      search
+      maxHeight={300}
+      labelField="name"
+      valueField="id"
+      searchPlaceholder="Search..."
+      value={selectedPokemon}
+      onChange={onSelect}
+    />
+  )
+}
+
+function PokemonImage({ image }: { image?: string }) {
+  return (
+    <Image
+      source={image ?? POKEBALL_IMAGE}
+      style={styles.pokemonImage}
+    />
+  )
+}
+
+function PokemonStats({ value, containerStyle, backgroundColor }: { value: number, containerStyle?: ViewStyle, backgroundColor: ColorValue }) {
+  return (
+    <ThemedView style={[styles.statContainer, containerStyle,]}>
+      <ThemedText
+        style={[
+          styles.statBar,
+          styles.statName,
+          styles.statValue,
+          {
+            width: `${value}%`,
+            backgroundColor,
+          },
+        ]}
+      >
+        {value}
+      </ThemedText>
+    </ThemedView>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -165,20 +157,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  statContainer: {
+  pokemonImage: {
+    width: '50%',
+    height: 200,
+  },
+  statsContainer: {
     width: `100%`,
     backgroundColor: '#ddd',
     borderRadius: 5,
   },
+  statContainer: {
+    width: `50%`,
+  },
   statBar: {
-    // flexGrow: 1,
     backgroundColor: '#00ffff',
     borderRadius: 5,
     position: 'relative',
-    // justifyContent: 'flex-end',
+    borderBottomLeftRadius: 0,
+    borderTopLeftRadius: 0,
   },
-  statValue: {
-    textAlign: 'center',
-    paddingVertical: 4
-  },
+  statName: { textAlign: 'center' },
+  statValue: { paddingVertical: 4 },
 });
