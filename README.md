@@ -1,50 +1,37 @@
-# Welcome to your Expo app 👋
+# React Native Pokedex App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native Pokedex application built for the Pensieve technical assessment. This app integrates with the [GraphQL PokeAPI](https://graphql-pokeapi.graphcdn.app/) and demonstrates core features such as search, filter, sort, and Pokemon comparison, all while emphasizing reusable components and lazy loading.
 
-## Get started
+## ✨ Features
 
-1. Install dependencies
+- 🔍 **Search** — Quickly find Pokémon by name.
+- 🧮 **Filter** — Filter Pokémon by type.
+- 🔢 **Sort** — Sort Pokémon by name or ID.
+- ⚖️ **Compare** — Select and compare multiple Pokemon side-by-side.
+- ⚡ **GraphQL Integration** — All data fetched via GraphQL from PokeAPI.
+- 🧱 **Reusable Components** — Clean and modular component structure.
+- 💤 **Lazy Loading** — Data load efficiently as needed.
 
-   ```bash
-   npm install
-   ```
+## 📦 Tech Stack
 
-2. Start the app
+- **React Native** — Core mobile development framework
+- **Expo** — Simplifies development and deployment
+- **Apollo Client** — GraphQL data management
+- **GraphQL** — API query language used via PokeAPI GraphQL
+- **Expo Router** — File-based routing for navigation
 
-   ```bash
-   npx expo start
-   ```
+## 🚀 Getting Started
 
-In the output, you'll find options to open the app in a
+### Prerequisites
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- Node.js
+- Expo CLI (`npm install -g expo-cli`)
+- npm
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+### Installation
 
 ```bash
-npm run reset-project
+git clone https://github.com/DarmaWiryanata/PokeExpoApp.git
+cd PokeExpoApp
+npm install
 ```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
