@@ -22,7 +22,7 @@ export default function HomeScreen() {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <ThemedView style={{ flexDirection: 'row' }}>
+        <ThemedView style={styles.headerRightItemsContainer}>
           <HeaderRightItem icon={Icons.FilterList} onPress={() => router.navigate('/filter')} />
           <HeaderRightItem icon={Icons.Search} onPress={() => setShowSearchBar(prev => !prev)} />
         </ThemedView>
@@ -57,20 +57,11 @@ export default function HomeScreen() {
   }, [searchInput, selectedSort, selectedType]);
 
   return (
-    <ThemedView>
+    <ThemedView style={styles.container}>
       {showSearchBar && (
         <TextInput
           placeholder="Search"
-          style={{
-            height: 40,
-            borderColor: 'gray',
-            borderWidth: 1,
-            margin: 10,
-            paddingLeft: 10,
-            borderRadius: 5,
-          }}
-          autoCapitalize='none'
-          autoCorrect={false}
+          style={styles.textInput}
           onChangeText={(input: string) => setSearchInput(input)}
         />
       )}
@@ -99,3 +90,16 @@ export default function HomeScreen() {
     </ThemedView>
   );
 }
+
+const styles = StyleSheet.create({
+  headerRightItemsContainer: { flexDirection: 'row' },
+  container: { flex: 1 },
+  textInput: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    margin: 10,
+    paddingLeft: 10,
+    borderRadius: 5,
+  },
+});
