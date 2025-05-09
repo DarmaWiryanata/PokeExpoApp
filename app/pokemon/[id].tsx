@@ -42,7 +42,7 @@ export default function DetailScreen() {
   const { id, name } = useLocalSearchParams();
   const navigation = useNavigation();
   const [pokemon, setPokemon] = useState<PokemonDetail>();
-  const { data, loading, error } = useQuery(GET_POKEMON_DETAIL, { variables: { id: parseInt(id.toString()) }});
+  const { data, loading, error } = useQuery(GET_POKEMON_DETAIL, { variables: { id } });
   
   useEffect(() => {
     navigation.setOptions({

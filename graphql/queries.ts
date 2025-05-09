@@ -23,6 +23,15 @@ export const GET_POKEMONS =  gql`
   }
 `;
 
+export const GET_POKEMONS_DROPDOWN = gql`
+  query getPokemonsDropdownQuery {
+    pokemon_v2_pokemon(order_by: {id: asc}) {
+      id
+      name
+    }
+  }
+`;
+
 export const GET_POKEMON_DETAIL = gql`
   query getPokemonDetailQuery($id: Int!) {
     pokemon_v2_pokemon_by_pk(id: $id) {

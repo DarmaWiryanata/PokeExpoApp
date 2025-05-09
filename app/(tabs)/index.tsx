@@ -1,12 +1,13 @@
 import { Image } from 'expo-image';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme } from 'react-native';
 
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol, IconSymbolName } from '@/components/ui/IconSymbol';
 import { Colors } from '@/constants/Colors';
 import { GET_POKEMONS } from '@/graphql/queries';
-import { useLazyQuery } from '@apollo/client';
+import { FilterContext } from '@/stores';
+import { useQuery } from '@apollo/client';
 import { Link, router, useLocalSearchParams, useNavigation } from 'expo-router';
 
 export interface Pokemon {
@@ -20,7 +21,7 @@ export default function HomeScreen() {
   const navigation = useNavigation();
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [showSearchBar, setShowSearchBar] = useState<boolean>(false);
-  const searchInput = useRef<TextInput>(null);
+  const { searchInput, selectedSort, selectedType, setSearchInput } = useContext(FilterContext);
 
   useEffect(() => {
     navigation.setOptions({
@@ -31,16 +32,15 @@ export default function HomeScreen() {
         </ThemedView>
       ),
     });
-    filterItems();
   }, []);
 
-  const [filterItems, { data, loading, error, fetchMore }] = useLazyQuery(GET_POKEMONS, {
+  const { data, loading, error, fetchMore, refetch } = useQuery(GET_POKEMONS, {
     variables: {
       limit: 20,
-      nameFilter: {},
+      nameFilter: { _ilike: `%${searchInput}%` },
       offset: 0,
-      typeFilter: {},
-      sort: { id: 'asc' },
+      typeFilter: selectedType !== 0 ? { type_id: { _eq: selectedType } } : {},
+      sort: { [selectedSort]: 'asc' },
     },
   });
 
@@ -57,23 +57,13 @@ export default function HomeScreen() {
   }, [data])
 
   useEffect(() => {
-    filterItems({
-      variables: {
-        sort: { [sort?.toString() ?? 'id']: 'asc' },
-        typeFilter: type && type !== "0" ? { type_id: { _eq: type } } : {},
-      }
-    });
-  }, [sort, type]);
-
-  function onSearch(input: string) {
-    filterItems({ variables: { nameFilter: input !== '' ? { _ilike: `%${input}%` } : {} } });
-  }
+    refetch();
+  }, [searchInput, selectedSort, selectedType]);
 
   return (
     <ThemedView>
       {showSearchBar && (
         <TextInput
-          ref={searchInput}
           placeholder="Search"
           style={{
             height: 40,
@@ -85,7 +75,7 @@ export default function HomeScreen() {
           }}
           autoCapitalize='none'
           autoCorrect={false}
-          onChangeText={onSearch}
+          onChangeText={(input: string) => setSearchInput(input)}
         />
       )}
 

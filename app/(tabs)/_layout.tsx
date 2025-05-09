@@ -32,6 +32,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="comparison"
+        options={{
+          title: 'Comparison',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="arrow.right.and.line.vertical.and.arrow.left" color={color} />,
+        }}
+      />
     </Tabs>
   );
 }
