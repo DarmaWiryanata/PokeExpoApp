@@ -74,7 +74,7 @@ export default function DetailScreen() {
   }, [data])
 
   return (
-    <ThemedView>
+    <ThemedView style={styles.container}>
       {loading && <LoadingIndicator />}
 
       {error && <Error message={error.message} />}
@@ -142,6 +142,7 @@ function PokemonStats({ stats }: { stats: PokemonStat[] }) {
 }
 
 const styles = StyleSheet.create({
+  container: { flex: 1 },
   pokemonImage: {
     width: "100%",
     height: 300,
