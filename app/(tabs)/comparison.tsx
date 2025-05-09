@@ -1,7 +1,7 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { Image } from 'expo-image';
 import { useEffect, useState } from 'react';
-import { ColorValue, StyleSheet, View, ViewStyle } from 'react-native';
+import { StyleSheet, TextStyle, View, ViewStyle } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 
 import { ThemedText } from '@/components/ThemedText';
@@ -70,8 +70,8 @@ export default function FilterScreen() {
           <View key={name}>
             <ThemedText style={styles.statName}>{getStatLabel(name)}</ThemedText>
             <ThemedView style={[styles.sectionContainer, styles.statsContainer]}>
-              <PokemonStats key={pokemon1Value} value={pokemon1Value} backgroundColor='#444' containerStyle={{ flexDirection: 'row-reverse' }} />
-              <PokemonStats key={pokemon2Value} value={pokemon2Value} backgroundColor='#999' />
+              <PokemonStats key={pokemon1Value} value={pokemon1Value} textStyle={{ backgroundColor: '#444', borderBottomRightRadius: 0, borderTopRightRadius: 0 }} containerStyle={{ flexDirection: 'row-reverse' }} />
+              <PokemonStats key={pokemon2Value} value={pokemon2Value} textStyle={{ backgroundColor: '#999', borderBottomLeftRadius: 0, borderTopLeftRadius: 0 }} />
             </ThemedView>
           </View>
         )
@@ -115,7 +115,7 @@ function PokemonImage({ image }: { image?: string }) {
   )
 }
 
-function PokemonStats({ value, containerStyle, backgroundColor }: { value: number, containerStyle?: ViewStyle, backgroundColor: ColorValue }) {
+function PokemonStats({ value, containerStyle, textStyle }: { value: number, containerStyle?: ViewStyle, textStyle?: TextStyle }) {
   return (
     <ThemedView style={[styles.statContainer, containerStyle,]}>
       <ThemedText
@@ -125,7 +125,7 @@ function PokemonStats({ value, containerStyle, backgroundColor }: { value: numbe
           styles.statValue,
           {
             width: `${value}%`,
-            backgroundColor,
+            ...textStyle
           },
         ]}
       >
@@ -174,9 +174,7 @@ const styles = StyleSheet.create({
   statBar: {
     backgroundColor: '#00ffff',
     borderRadius: 5,
-    position: 'relative',
-    borderBottomLeftRadius: 0,
-    borderTopLeftRadius: 0,
+    position: 'relative'
   },
   statName: { textAlign: 'center' },
   statValue: { paddingVertical: 4 },

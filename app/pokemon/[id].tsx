@@ -91,10 +91,20 @@ function PokemonStats({ stats }: { stats: PokemonStat[] }) {
       {stats.map(({ name, base_stat }) => (
         <ThemedView key={name}>
           <ThemedText type='defaultSemiBold'>{getStatLabel(name)}</ThemedText>
-          <ThemedView style={styles.statContainer}>
-            <ThemedView style={styles.statBar}>
+          <ThemedView
+            style={{
+              ...styles.statContainer
+            }}
+          >
+            <ThemedView
+              style={{
+                ...styles.statBar,
+                width: "100%",
+                backgroundColor: "#ddd"
+              }}
+            >
               <ThemedText
-                style={[styles.statValue, { width: `${base_stat}%` }]}
+                style={[styles.statValue, { width: `${base_stat}%`, backgroundColor: "#999" }]}
               >{base_stat}</ThemedText>
             </ThemedView>
           </ThemedView>
