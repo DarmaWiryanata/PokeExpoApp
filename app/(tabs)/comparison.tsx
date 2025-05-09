@@ -10,6 +10,7 @@ import { POKEBALL_IMAGE } from '@/constants/Images';
 import { GET_POKEMON_DETAIL, GET_POKEMONS_DROPDOWN } from '@/graphql/queries';
 import Pokemon from '@/types/Pokemon';
 import PokemonDetail from '@/types/PokemonDetail';
+import capitalize from '@/utils/functions/capitalize';
 import getStatLabel from '@/utils/functions/getStatLabel';
 import parsePokemon from '@/utils/functions/parsePokemon';
 
@@ -26,7 +27,7 @@ export default function FilterScreen() {
     if (pokemonDropdown.data) {
       const pokemons: Pokemon[] = pokemonDropdown.data.pokemon_v2_pokemon.map((pokemon: any) => ({
         id: pokemon.id,
-        name: pokemon.name,
+        name: capitalize(pokemon.name),
         sprite: "",
       }))
 

@@ -12,6 +12,7 @@ import { ThemedView } from '@/components/ThemedView';
 import Icons from '@/constants/Icons';
 import { FilterContext } from '@/stores';
 import Pokemon from '@/types/Pokemon';
+import capitalize from '@/utils/functions/capitalize';
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -44,7 +45,7 @@ export default function HomeScreen() {
     if (data) {
       const pokemons: Pokemon[] = data.pokemon_v2_pokemon.map((pokemon: any) => ({
         id: pokemon.id,
-        name: pokemon.name,
+        name: capitalize(pokemon.name),
         sprite: pokemon.pokemon_v2_pokemonsprites[0]?.sprites ?? "",
       }))
 

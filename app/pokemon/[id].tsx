@@ -25,6 +25,7 @@ export default function DetailScreen() {
   useEffect(() => {
     navigation.setOptions({
       headerTitle: name,
+      headerBackTitle: 'Back',
     });
   }, []);
 

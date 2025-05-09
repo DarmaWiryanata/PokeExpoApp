@@ -2,6 +2,7 @@ import PokemonDetail from "@/types/PokemonDetail";
 import PokemonStat from "@/types/PokemonStat";
 import PokemonType from "@/types/PokemonType";
 import { ReqPokemonDetail } from "@/types/ReqPokemonDetail";
+import capitalize from "./capitalize";
 
 export default function parsePokemon(data: ReqPokemonDetail): PokemonDetail {
   const {
@@ -15,7 +16,7 @@ export default function parsePokemon(data: ReqPokemonDetail): PokemonDetail {
   } = data.pokemon_v2_pokemon_by_pk;
 
   const types: PokemonType[] = pokemon_v2_pokemontypes.map((type: any) => ({
-    name: type.pokemon_v2_type.name,
+    name: capitalize(type.pokemon_v2_type.name),
     slot: type.slot,
   })).sort((a: PokemonType, b: PokemonType) => (a.slot < b.slot ? -1 : 1));
 
@@ -28,7 +29,7 @@ export default function parsePokemon(data: ReqPokemonDetail): PokemonDetail {
   const { officialSprite, defaultSprite }: any = pokemon_v2_pokemonsprites[0];
   const selectedPokemon: PokemonDetail = {
     id,
-    name,
+    name: capitalize(name),
     height,
     weight,
     sprite: officialSprite ?? defaultSprite,
