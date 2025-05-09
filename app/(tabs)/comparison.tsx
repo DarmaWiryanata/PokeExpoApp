@@ -72,7 +72,6 @@ export default function FilterScreen() {
         weight,
         sprite: pokemon_v2_pokemonsprites[0].default,
         officialArtworkSprite: pokemon_v2_pokemonsprites[0].official,
-        growthRate: pokemon_v2_pokemonspecy.pokemon_v2_growthrate.name,
         types,
         stats,
         abilities,
@@ -92,7 +91,6 @@ export default function FilterScreen() {
         pokemon_v2_pokemonsprites,
         pokemon_v2_pokemontypes,
         pokemon_v2_pokemonstats,
-        pokemon_v2_pokemonspecy,
         pokemon_v2_pokemonabilities
       } = secondPokemonQuery.data.pokemon_v2_pokemon_by_pk;
 
@@ -120,7 +118,6 @@ export default function FilterScreen() {
         weight,
         sprite: pokemon_v2_pokemonsprites[0].default,
         officialArtworkSprite: pokemon_v2_pokemonsprites[0].official,
-        growthRate: pokemon_v2_pokemonspecy.pokemon_v2_growthrate.name,
         types,
         stats,
         abilities,

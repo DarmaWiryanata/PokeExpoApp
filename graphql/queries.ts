@@ -56,12 +56,6 @@ export const GET_POKEMON_DETAIL = gql`
           name
         }
       }
-      pokemon_v2_pokemonspecy {
-        gender_rate
-        pokemon_v2_growthrate {
-          name
-        }
-      }
       pokemon_v2_pokemonabilities {
         pokemon_v2_ability {
           name

@@ -37,7 +37,6 @@ export default function DetailScreen() {
         pokemon_v2_pokemonsprites,
         pokemon_v2_pokemontypes,
         pokemon_v2_pokemonstats,
-        pokemon_v2_pokemonspecy,
         pokemon_v2_pokemonabilities
       } = data.pokemon_v2_pokemon_by_pk;
 

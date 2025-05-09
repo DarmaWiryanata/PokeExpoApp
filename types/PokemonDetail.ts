@@ -7,7 +7,6 @@ export default interface PokemonDetail extends Pokemon {
   height: number;
   weight: number;
   officialArtworkSprite?: string;
-  growthRate: string;
   types: PokemonType[];
   stats: PokemonStat[];
   abilities: PokemonAbility[];
