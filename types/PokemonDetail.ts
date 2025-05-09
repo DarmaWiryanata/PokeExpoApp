@@ -6,7 +6,6 @@ import PokemonType from "./PokemonType";
 export default interface PokemonDetail extends Pokemon {
   height: number;
   weight: number;
-  officialArtworkSprite?: string;
   types: PokemonType[];
   stats: PokemonStat[];
   abilities: PokemonAbility[];

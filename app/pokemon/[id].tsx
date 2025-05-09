@@ -57,14 +57,13 @@ export default function DetailScreen() {
         is_hidden: ability.is_hidden,
       })).sort((a: PokemonAbility, b: PokemonAbility) => (a.slot < b.slot ? -1 : 1));
 
+      const { officialSprite, defaultSprite }: any = pokemon_v2_pokemonsprites[0];
       const selectedPokemon: PokemonDetail = {
         id,
         name,
         height,
         weight,
-        sprite: pokemon_v2_pokemonsprites[0].default,
-        officialArtworkSprite: pokemon_v2_pokemonsprites[0].official,
-        growthRate: pokemon_v2_pokemonspecy.pokemon_v2_growthrate.name,
+        sprite: officialSprite ?? defaultSprite,
         types,
         stats,
         abilities,
@@ -83,7 +82,7 @@ export default function DetailScreen() {
       {pokemon && (
         <ThemedView>
           <Image
-            source={{ uri: pokemon.officialArtworkSprite}}
+            source={{ uri: pokemon.sprite }}
             style={styles.pokemonImage}
           />
           <ThemedView style={styles.profileContainer}>

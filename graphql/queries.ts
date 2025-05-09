@@ -40,8 +40,8 @@ export const GET_POKEMON_DETAIL = gql`
       height
       weight
       pokemon_v2_pokemonsprites {
-        default: sprites(path: "front_default")
-        official: sprites(path: "other.official-artwork.front_default")
+        defaultSprite: sprites(path: "front_default")
+        officialSprite: sprites(path: "other.official-artwork.front_default")
       }
       pokemon_v2_pokemontypes {
         slot

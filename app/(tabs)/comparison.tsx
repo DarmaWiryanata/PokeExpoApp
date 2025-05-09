@@ -65,13 +65,13 @@ export default function FilterScreen() {
         is_hidden: ability.is_hidden,
       })).sort((a: PokemonAbility, b: PokemonAbility) => (a.slot < b.slot ? -1 : 1));
 
+      const { officialSprite, defaultSprite }: any = pokemon_v2_pokemonsprites[0];
       const selectedPokemon: PokemonDetail = {
         id,
         name,
         height,
         weight,
-        sprite: pokemon_v2_pokemonsprites[0].default,
-        officialArtworkSprite: pokemon_v2_pokemonsprites[0].official,
+        sprite: officialSprite ?? defaultSprite,
         types,
         stats,
         abilities,
@@ -111,13 +111,13 @@ export default function FilterScreen() {
         is_hidden: ability.is_hidden,
       })).sort((a: PokemonAbility, b: PokemonAbility) => (a.slot < b.slot ? -1 : 1));
 
+      const { officialSprite, defaultSprite }: any = pokemon_v2_pokemonsprites[0];      
       const selectedPokemon: PokemonDetail = {
         id,
         name,
         height,
         weight,
-        sprite: pokemon_v2_pokemonsprites[0].default,
-        officialArtworkSprite: pokemon_v2_pokemonsprites[0].official,
+        sprite: officialSprite ?? defaultSprite,
         types,
         stats,
         abilities,
@@ -168,11 +168,11 @@ export default function FilterScreen() {
 
       <ThemedView style={styles.sectionContainer}>
         <Image
-          source={firstPokemon?.officialArtworkSprite ?? firstPokemon?.sprite ?? POKEBALL_IMAGE}
+          source={firstPokemon?.sprite ?? POKEBALL_IMAGE}
           style={{ width: '50%', height: 200 }}
         />
         <Image
-          source={secondPokemon?.officialArtworkSprite ?? secondPokemon?.sprite ?? POKEBALL_IMAGE}
+          source={secondPokemon?.sprite ?? POKEBALL_IMAGE}
           style={{ width: '50%', height: 200 }}
         />
       </ThemedView>
