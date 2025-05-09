@@ -1,6 +1,6 @@
 import { ActivityIndicator, StyleSheet } from "react-native";
 
-export default function LoadingIndicator() {
+export function LoadingIndicator() {
   return (
     <ActivityIndicator style={styles.loading} />
   )

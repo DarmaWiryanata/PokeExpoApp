@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
 
-export default function Error({ message }: { message: string }) {
+export function Error({ message }: { message: string }) {
   return (
     <ThemedView style={styles.container}>
       <Image

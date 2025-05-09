@@ -2,11 +2,11 @@ import { GET_POKEMONS } from '@/graphql/queries';
 import { useQuery } from '@apollo/client';
 import { router, useNavigation } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, TextInput } from 'react-native';
+import { FlatList, StyleSheet, TextInput } from 'react-native';
 
-import Error from '@/components/Error';
+import { Error } from '@/components/Error';
 import HeaderRightItem from '@/components/HeaderRightItem';
-import LoadingIndicator from '@/components/LoadingIndicator';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
 import PokemonCard from '@/components/PokemonCard';
 import { ThemedView } from '@/components/ThemedView';
 import Icons from '@/constants/Icons';
@@ -84,7 +84,7 @@ export default function HomeScreen() {
               },
             })
           }}
-          ListFooterComponent={loading ? <ActivityIndicator /> : null}
+          ListFooterComponent={loading ? <LoadingIndicator /> : null}
         />
       )}
     </ThemedView>

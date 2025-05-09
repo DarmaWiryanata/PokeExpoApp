@@ -2,8 +2,10 @@ import { useQuery } from '@apollo/client';
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
+import { Error } from '@/components/Error';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { POKEBALL_IMAGE } from '@/constants/Images';
@@ -75,9 +77,9 @@ export default function DetailScreen() {
 
   return (
     <ThemedView>
-      {loading && <ActivityIndicator style={styles.loading} />}
+      {loading && <LoadingIndicator />}
 
-      {error && <ThemedText>Error: {error.message}</ThemedText>}
+      {error && <Error message={error.message} />}
 
       {pokemon && (
         <ThemedView>
@@ -85,37 +87,10 @@ export default function DetailScreen() {
             source={{ uri: pokemon.officialArtworkSprite}}
             style={styles.pokemonImage}
           />
-          <ThemedView style={{ padding: 10 }}>
-            <ThemedView style={styles.cardHeader}>
-              <Image
-                source={POKEBALL_IMAGE}
-                style={{ width: 40, height: 40 }}
-              />
-              <ThemedText type='title'>{pokemon.id}</ThemedText>
-            </ThemedView>
-            <ThemedView style={styles.cardHeader}>
-              {pokemon.types.map(({ name, slot }) => (
-                <ThemedText
-                  type='subtitle'
-                  style={styles.typePill}
-                  key={slot}
-                >{name}</ThemedText>
-              ))}
-            </ThemedView>
-            <ThemedView>
-              {pokemon.stats.map(({ name, base_stat }) => (
-                <ThemedView key={name}>
-                  <ThemedText>{name}</ThemedText>
-                  <ThemedView style={styles.statContainer}>
-                    <ThemedView style={styles.statBar}>
-                      <ThemedText
-                        style={{ width: `${base_stat}%`, ...styles.statValue }}
-                      >{base_stat}</ThemedText>
-                    </ThemedView>
-                  </ThemedView>
-                </ThemedView>
-              ))}
-            </ThemedView>
+          <ThemedView style={styles.profileContainer}>
+            <PokemonID id={pokemon.id} />
+            <PokemonTypes types={pokemon.types} />
+            <PokemonStats stats={pokemon.stats} />
           </ThemedView>
         </ThemedView>
       )}
@@ -123,21 +98,62 @@ export default function DetailScreen() {
   );
 }
 
+function PokemonID({ id }: { id: number }) {
+  return (
+    <ThemedView style={styles.quickProfileContainer}>
+      <Image
+        source={POKEBALL_IMAGE}
+        style={{ width: 40, height: 40 }}
+      />
+      <ThemedText type='title'>{id}</ThemedText>
+    </ThemedView>
+  )
+}
+
+function PokemonTypes({ types }: { types: PokemonType[] }) {
+  return (
+    <ThemedView style={styles.quickProfileContainer}>
+      {types.map(({ name, slot }) => (
+        <ThemedText
+          type='subtitle'
+          style={styles.typePill}
+          key={slot}
+        >{name}</ThemedText>
+      ))}
+    </ThemedView>
+  )
+}
+
+function PokemonStats({ stats }: { stats: PokemonStat[] }) {
+  return (
+    <>
+      {stats.map(({ name, base_stat }) => (
+        <ThemedView key={name}>
+          <ThemedText type='defaultSemiBold'>{name}</ThemedText>
+          <ThemedView style={styles.statContainer}>
+            <ThemedView style={styles.statBar}>
+              <ThemedText
+                style={[styles.statValue, { width: `${base_stat}%` }]}
+              >{base_stat}</ThemedText>
+            </ThemedView>
+          </ThemedView>
+        </ThemedView>
+      ))}
+    </>
+  )
+}
+
 const styles = StyleSheet.create({
-  loading: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  pokemonImage: {
+    width: "100%",
+    height: 300,
   },
-  cardHeader: {
+  profileContainer: { padding: 10 },
+  quickProfileContainer: {
     flexDirection: 'row',
     width: "100%",
     paddingBottom: 5,
     alignItems: 'center',
-  },
-  pokemonImage: {
-    width: "100%",
-    height: 300,
   },
   typePill: {
     backgroundColor: '#aaa',
