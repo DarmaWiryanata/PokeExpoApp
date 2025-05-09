@@ -8,34 +8,35 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { POKEBALL_IMAGE } from '@/constants/Images';
 import { GET_POKEMON_DETAIL, GET_POKEMONS_DROPDOWN } from '@/graphql/queries';
-import { Pokemon } from '.';
-import { PokemonAbility, PokemonDetail, PokemonStat, PokemonType } from '../pokemon/[id]';
+import Pokemon from '@/types/Pokemon';
+import PokemonAbility from '@/types/PokemonAbility';
+import PokemonDetail from '@/types/PokemonDetail';
+import PokemonStat from '@/types/PokemonStat';
+import PokemonType from '@/types/PokemonType';
 
 export default function FilterScreen() {
-  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+  const [pokemonsDropdown, setPokemonsDropdown] = useState<Pokemon[]>([]);
   const [firstPokemon, setFirstPokemon] = useState<PokemonDetail>();
-  const [secondPokemonID, setSecondPokemonID] = useState<number>();
   const [secondPokemon, setSecondPokemon] = useState<PokemonDetail>();
+  const [isLeft, setIsLeft] = useState<boolean>();
 
-  const { data } = useQuery(GET_POKEMONS_DROPDOWN);
+  const pokemonDropdown = useQuery(GET_POKEMONS_DROPDOWN);
+  const [fetchPokemon, pokemon] = useLazyQuery(GET_POKEMON_DETAIL);
 
   useEffect(() => {
-    if (data) {
-      const pokemons: Pokemon[] = data.pokemon_v2_pokemon.map((pokemon: any) => ({
+    if (pokemonDropdown.data) {
+      const pokemons: Pokemon[] = pokemonDropdown.data.pokemon_v2_pokemon.map((pokemon: any) => ({
         id: pokemon.id,
         name: pokemon.name,
         sprite: "",
       }))
 
-      setPokemons(pokemons);
+      setPokemonsDropdown(pokemons);
     }
-  }, [data])
-
-  const [fetchFirstPokemonQuery, firstPokemonQuery] = useLazyQuery(GET_POKEMON_DETAIL);
-  const [fetchSecondPokemonQuery, secondPokemonQuery] = useLazyQuery(GET_POKEMON_DETAIL);
+  }, [pokemonDropdown.data])
 
   useEffect(() => {
-    if (firstPokemonQuery.data) {
+    if (pokemon.data) {
       const {
         id,
         name,
@@ -44,9 +45,8 @@ export default function FilterScreen() {
         pokemon_v2_pokemonsprites,
         pokemon_v2_pokemontypes,
         pokemon_v2_pokemonstats,
-        pokemon_v2_pokemonspecy,
         pokemon_v2_pokemonabilities
-      } = firstPokemonQuery.data.pokemon_v2_pokemon_by_pk;
+      } = pokemon.data.pokemon_v2_pokemon_by_pk;
 
       const types: PokemonType[] = pokemon_v2_pokemontypes.map((type: any) => ({
         name: type.pokemon_v2_type.name,
@@ -77,56 +77,17 @@ export default function FilterScreen() {
         abilities,
       }
 
-      setFirstPokemon(selectedPokemon);
+      isLeft ? setFirstPokemon(selectedPokemon) : setSecondPokemon(selectedPokemon);
     }
-  }, [firstPokemonQuery.data])
+  }, [pokemon.data])
 
-  useEffect(() => {
-    if (secondPokemonQuery.data) {
-      const {
-        id,
-        name,
-        height,
-        weight,
-        pokemon_v2_pokemonsprites,
-        pokemon_v2_pokemontypes,
-        pokemon_v2_pokemonstats,
-        pokemon_v2_pokemonabilities
-      } = secondPokemonQuery.data.pokemon_v2_pokemon_by_pk;
+  function onSelectPokemon(item: Pokemon, isLeft: boolean) {
+    fetchPokemon({
+      variables: { id: item.id }
+    });
+    setIsLeft(isLeft)
+  }
 
-      const types: PokemonType[] = pokemon_v2_pokemontypes.map((type: any) => ({
-        name: type.pokemon_v2_type.name,
-        slot: type.slot,
-      })).sort((a: PokemonType, b: PokemonType) => (a.slot < b.slot ? -1 : 1));
-
-      const stats: PokemonStat[] = pokemon_v2_pokemonstats.map((stat: any) => ({
-        name: stat.pokemon_v2_stat.name,
-        base_stat: stat.base_stat,
-        effort: stat.effort,
-      }));
-
-      const abilities: PokemonAbility[] = pokemon_v2_pokemonabilities.map((ability: any) => ({
-        name: ability.pokemon_v2_ability.name,
-        slot: ability.slot,
-        is_hidden: ability.is_hidden,
-      })).sort((a: PokemonAbility, b: PokemonAbility) => (a.slot < b.slot ? -1 : 1));
-
-      const { officialSprite, defaultSprite }: any = pokemon_v2_pokemonsprites[0];      
-      const selectedPokemon: PokemonDetail = {
-        id,
-        name,
-        height,
-        weight,
-        sprite: officialSprite ?? defaultSprite,
-        types,
-        stats,
-        abilities,
-      }
-
-      setSecondPokemon(selectedPokemon);
-    }
-  }, [secondPokemonQuery.data])
-  
   return (
     <ThemedView style={styles.container}>
       <ThemedView style={styles.sectionContainer}>
@@ -134,35 +95,27 @@ export default function FilterScreen() {
             style={styles.dropdown}
             selectedTextStyle={styles.selectedTextStyle}
             inputSearchStyle={styles.inputSearchStyle}
-            data={pokemons}
+          data={pokemonsDropdown}
             search
             maxHeight={300}
             labelField="name"
             valueField="id"
             searchPlaceholder="Search..."
             value={firstPokemon}
-            onChange={(item) => {
-              fetchFirstPokemonQuery({
-                variables: { id: item.id }
-              });
-            }}
+          onChange={(item) => onSelectPokemon(item, true)}
           />
         <Dropdown
             style={styles.dropdown}
             selectedTextStyle={styles.selectedTextStyle}
             inputSearchStyle={styles.inputSearchStyle}
-            data={pokemons}
+          data={pokemonsDropdown}
             search
             maxHeight={300}
             labelField="name"
             valueField="id"
             searchPlaceholder="Search..."
             value={secondPokemon}
-            onChange={(item) => {
-              fetchSecondPokemonQuery({
-                variables: { id: item.id }
-              });
-            }}
+          onChange={(item) => onSelectPokemon(item, false)}
           />
       </ThemedView>
 
@@ -181,6 +134,7 @@ export default function FilterScreen() {
         const name = stat.name
         const pokemon1Value = stat.base_stat
         const pokemon2Value = secondPokemon.stats[index].base_stat
+
         return (
           <View key={name}>
             <ThemedText style={{textAlign: 'center'}}>{name}</ThemedText>
