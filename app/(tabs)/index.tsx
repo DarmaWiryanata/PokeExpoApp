@@ -1,16 +1,16 @@
-import { Image } from 'expo-image';
-import { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme } from 'react-native';
-
-import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol, IconSymbolName } from '@/components/ui/IconSymbol';
-import { Colors } from '@/constants/Colors';
-import Icons from '@/constants/Icons';
-import { POKEBALL_IMAGE } from '@/constants/Images';
 import { GET_POKEMONS } from '@/graphql/queries';
+import { useQuery } from '@apollo/client';
+import { router, useNavigation } from 'expo-router';
+import { useContext, useEffect, useState } from 'react';
+import { ActivityIndicator, FlatList, StyleSheet, TextInput } from 'react-native';
+
+import HeaderRightItem from '@/components/HeaderRightItem';
+import PokemonCard from '@/components/PokemonCard';
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
+import Icons from '@/constants/Icons';
 import { FilterContext } from '@/stores';
 import Pokemon from '@/types/Pokemon';
-
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -99,75 +99,10 @@ export default function HomeScreen() {
   );
 }
 
-function HeaderRightItem({ icon, onPress }: { icon: IconSymbolName, onPress: () => void }) {
-  const colorScheme = useColorScheme();
-
-  return (
-    <TouchableOpacity onPress={onPress}>
-      <IconSymbol size={28} name={icon} color={Colors[colorScheme ?? 'light'].icon} style={styles.headerRightItem} />
-    </TouchableOpacity>
-  );
-}
-
-function PokemonCard({ pokemon }: { pokemon: Pokemon }) {
-  const { id, name, sprite } = pokemon;
-
-  return (
-    <Link
-      style={styles.cardContainer}
-      href={{
-        pathname: '/pokemon/[id]',
-        params: { id, name }
-      }}
-    >
-      <ThemedView style={styles.cardHeader}>
-        <Image
-          source={POKEBALL_IMAGE}
-          style={{ width: 40, height: 40 }}
-        />
-        <Text>{id}</Text>
-      </ThemedView>
-      <ThemedView style={styles.cardContent}>
-        <Image
-          source={sprite}
-          style={{ width: 100, height: 100 }}
-        />
-        <Text style={{ textAlign: 'center' }}>{name}</Text>
-      </ThemedView>
-    </Link>
-  );
-}
-
 const styles = StyleSheet.create({
-  headerRightItem: {
-    marginRight: 10,
-  },
   loading: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  cardContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    margin: 5,
-    backgroundColor: '#fff',
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderColor: '#ccc',
-    width: "100%",
-    paddingHorizontal: 10,
-    paddingBottom: 5,
-    alignItems: 'center',
-  },
-  cardContent: {
-    paddingTop: 5,
   },
 });
