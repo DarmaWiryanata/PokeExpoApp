@@ -8,34 +8,10 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { POKEBALL_IMAGE } from '@/constants/Images';
 import { GET_POKEMON_DETAIL } from '@/graphql/queries';
-import { Pokemon } from '../(tabs)';
-
-export interface PokemonDetail extends Pokemon {
-  height: number;
-  weight: number;
-  officialArtworkSprite?: string;
-  growthRate: string;
-  types: PokemonType[];
-  stats: PokemonStat[];
-  abilities: PokemonAbility[];
-}
-
-export interface PokemonType {
-  name: string;
-  slot: number;
-}
-
-export interface PokemonStat {
-  name: string;
-  base_stat: number;
-  effort: number;
-}
-
-export interface PokemonAbility {
-  name: string;
-  slot: number;
-  is_hidden: boolean;
-}
+import PokemonAbility from '@/types/PokemonAbility';
+import PokemonDetail from '@/types/PokemonDetail';
+import PokemonStat from '@/types/PokemonStat';
+import PokemonType from '@/types/PokemonType';
 
 export default function DetailScreen() {
   const { id, name } = useLocalSearchParams();

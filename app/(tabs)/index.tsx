@@ -9,14 +9,8 @@ import Icons from '@/constants/Icons';
 import { POKEBALL_IMAGE } from '@/constants/Images';
 import { GET_POKEMONS } from '@/graphql/queries';
 import { FilterContext } from '@/stores';
-import { useQuery } from '@apollo/client';
-import { Link, router, useNavigation } from 'expo-router';
+import Pokemon from '@/types/Pokemon';
 
-export interface Pokemon {
-  id: number;
-  name: string;
-  sprite: string;
-}
 
 export default function HomeScreen() {
   const navigation = useNavigation();
