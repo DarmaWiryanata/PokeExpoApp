@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, TextInput } from 'react-native';
 
 import HeaderRightItem from '@/components/HeaderRightItem';
+import LoadingIndicator from '@/components/LoadingIndicator';
 import PokemonCard from '@/components/PokemonCard';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -74,7 +75,7 @@ export default function HomeScreen() {
         />
       )}
 
-      {loading && <ActivityIndicator style={styles.loading} />}
+      {loading && <LoadingIndicator />}
 
       {error && <Text>Error: {error.message}</Text>}
 
@@ -98,11 +99,3 @@ export default function HomeScreen() {
     </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  loading: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
