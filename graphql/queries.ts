@@ -56,13 +56,6 @@ export const GET_POKEMON_DETAIL = gql`
           name
         }
       }
-      pokemon_v2_pokemonabilities {
-        pokemon_v2_ability {
-          name
-        }
-        is_hidden
-        slot
-      }
     }
   }
 `;

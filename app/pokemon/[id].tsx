@@ -10,7 +10,6 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { POKEBALL_IMAGE } from '@/constants/Images';
 import { GET_POKEMON_DETAIL } from '@/graphql/queries';
-import PokemonAbility from '@/types/PokemonAbility';
 import PokemonDetail from '@/types/PokemonDetail';
 import PokemonStat from '@/types/PokemonStat';
 import PokemonType from '@/types/PokemonType';

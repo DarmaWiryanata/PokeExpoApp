@@ -1,5 +1,4 @@
 import Pokemon from "./Pokemon";
-import PokemonAbility from "./PokemonAbility";
 import PokemonStat from "./PokemonStat";
 import PokemonType from "./PokemonType";
 
@@ -8,5 +7,4 @@ export default interface PokemonDetail extends Pokemon {
   weight: number;
   types: PokemonType[];
   stats: PokemonStat[];
-  abilities: PokemonAbility[];
 }
